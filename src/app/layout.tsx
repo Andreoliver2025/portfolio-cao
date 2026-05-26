@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileBottomCTA } from "@/components/layout/mobile-bottom-cta";
+import { LgpdNotice } from "@/components/layout/lgpd-notice";
+import { jsonLdScriptProps, personJsonLd } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,12 +47,17 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {/* JSON-LD Person (Story 1.6 AC3). ProfessionalService entra na 4.3. */}
+        <script {...jsonLdScriptProps(personJsonLd())} />
       </head>
       <body className="flex min-h-full flex-col pb-[var(--spacing-5xl)] md:pb-0">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
         <MobileBottomCTA />
+        <LgpdNotice />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -24,7 +24,11 @@ export function trackEvent(name: ConversionEvent, payload?: AnalyticsPayload) {
     console.debug("[analytics]", name, payload ?? {});
     return;
   }
-  // Story 1.6: integração real, ex.:
-  //   window.plausible?.(name, { props: payload });
-  //   ou Vercel Analytics: import { track } from "@vercel/analytics";
+  // Vercel Analytics (cookieless, LGPD-friendly) — import dinâmico para não
+  // bloquear o cliente e falhar de forma silenciosa se o pacote indisponível (NFR7).
+  import("@vercel/analytics")
+    .then(({ track }) => track(name, payload))
+    .catch(() => {
+      /* fallback silencioso — analytics é opcional, não pode quebrar a app */
+    });
 }
