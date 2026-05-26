@@ -1,26 +1,418 @@
+/* ============================================================================
+   CAO DESIGN SYSTEM — tokens.css
+   Portfólio Carlos André Oliveira · Estrategista de IA
+   ----------------------------------------------------------------------------
+   Estética: "AI-native bold / brutalist cockpit" (dark-first)
+   Referência: aioxenterprise.cloud/cohort-t5  ·  Acento próprio: Magenta #FF2E97
+   Tipografia: Geist + Geist Mono   ·   WCAG AA validado (ver DESIGN-SYSTEM.md)
+
+   Arquitetura de 2 camadas:
+     1) PALETTE  — valores brutos, independentes de tema (--p-*)
+     2) SEMÂNTICA — tokens que mudam por tema (--canvas, --fg, --accent...),
+        mapeados no @theme inline para gerar utilities Tailwind v4 que respondem
+        ao toggle dark/light em runtime.
+
+   Uso em Next.js 16 + Tailwind v4:
+     - Cole este arquivo como `app/globals.css` (já contém @import "tailwindcss").
+     - Carregue Geist via next/font/google e exponha como --font-geist-sans /
+       --font-geist-mono (ver DESIGN-SYSTEM.md → Integração).
+     - Tema escuro é o DEFAULT (<html> sem classe). Tema claro: <html class="light">.
+   ============================================================================ */
+
 @import "tailwindcss";
 
+/* Considera o tema claro quando <html class="light"> (toggle por classe). */
+@custom-variant light (&:where(.light, .light *));
+
+/* ----------------------------------------------------------------------------
+   1) PALETTE BRUTA  (theme-independent)
+   ---------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Pretos quentes — camadas de profundidade */
+  --p-void:            #0A0A0A; /* base absoluta / fundo do body */
+  --p-canvas:          #1A1A1A; /* canvas primário */
+  --p-surface-deep:    #1B1C20;
+  --p-surface:         #1F2024; /* superfície de card padrão */
+  --p-surface-panel:   #232428;
+  --p-surface-console: #25271B; /* tinta oliva — blocos "terminal/cockpit" */
+  --p-surface-overlay: #2A2A2E;
+  --p-surface-hover:   #28292D;
+  --p-surface-olive:   #353620; /* destaque oliva (selo/realce) */
+
+  /* Acento — Magenta Elétrico (assinatura) + escala de opacidade p/ glow e fundos */
+  --p-accent:          #FF2E97;
+  --p-accent-strong:   #B0185F; /* magenta escuro p/ texto sobre fundo claro (AA) */
+  --p-accent-04:       rgba(255, 46, 151, 0.04);
+  --p-accent-06:       rgba(255, 46, 151, 0.06);
+  --p-accent-08:       rgba(255, 46, 151, 0.08);
+  --p-accent-10:       rgba(255, 46, 151, 0.10);
+  --p-accent-12:       rgba(255, 46, 151, 0.12);
+  --p-accent-15:       rgba(255, 46, 151, 0.15);
+  --p-accent-20:       rgba(255, 46, 151, 0.20);
+  --p-accent-25:       rgba(255, 46, 151, 0.25);
+  --p-accent-50:       rgba(255, 46, 151, 0.50);
+  --p-accent-60:       rgba(255, 46, 151, 0.60);
+
+  /* Cremes / brancos quentes (texto sobre dark) */
+  --p-warm-white:      #FCFBEC;
+  --p-cream:           #F4F4E8;
+  --p-cream-alt:       #F5F5E8;
+  --p-cream-ui:        #F4F4E5;
+
+  /* Inks (texto sobre superfícies claras) */
+  --p-ink:             #1A1A1A;
+  --p-ink-soft:        #2A2D1E;
+
+  /* Escala de cinzas */
+  --p-silver:          #BDBDBD;
+  --p-gray-muted:      #999999;
+  --p-meta:            #8E8E8E;
+  --p-gray-dim:        #696969;
+  --p-charcoal:        #3D3D3D;
+
+  /* Cinzas para borda (neutros com alpha) */
+  --p-line-08:         rgba(156, 156, 156, 0.08);
+  --p-line-10:         rgba(156, 156, 156, 0.10);
+  --p-line-15:         rgba(156, 156, 156, 0.15);
+  --p-line-24:         rgba(156, 156, 156, 0.24);
+  --p-line-25:         rgba(156, 156, 156, 0.25);
+
+  /* Semânticas funcionais */
+  --p-info:            #0099FF;
+  --p-success:         #4ADE80; /* uso pontual: estado de sucesso explícito */
+  --p-warning:         #DDA536;
+  --p-flare:           #ED4609;
+  --p-error:           #EF4444;
 }
 
+/* ----------------------------------------------------------------------------
+   2) SEMÂNTICA — TEMA ESCURO (DEFAULT)
+   ---------------------------------------------------------------------------- */
+:root {
+  --canvas:            var(--p-void);
+  --surface:           var(--p-surface);
+  --surface-deep:      var(--p-surface-deep);
+  --surface-panel:     var(--p-surface-panel);
+  --surface-console:   var(--p-surface-console);
+  --surface-overlay:   var(--p-surface-overlay);
+  --surface-hover:     var(--p-surface-hover);
+  --surface-olive:     var(--p-surface-olive);
+
+  --fg:                var(--p-cream);       /* texto primário */
+  --fg-strong:         var(--p-warm-white);  /* ênfase / headlines */
+  --fg-muted:          var(--p-silver);      /* texto secundário */
+  --fg-subtle:         var(--p-meta);        /* metadados / labels mono */
+  --fg-faint:          var(--p-gray-dim);    /* disabled / apenas grande */
+  --fg-dim:            rgba(244, 244, 232, 0.40);
+
+  --accent:            var(--p-accent);
+  --accent-quiet:      var(--p-accent-15);   /* fundo de chip/badge */
+  --accent-line:       var(--p-accent-25);   /* borda de acento */
+  --on-accent:         var(--p-void);        /* texto sobre botão de acento */
+
+  --border:            var(--p-line-15);
+  --border-soft:       var(--p-line-10);
+  --border-hover:      var(--p-line-24);
+  --border-strong:     var(--p-line-25);
+
+  --info:              var(--p-info);
+  --success:           var(--p-success);
+  --warning:           var(--p-warning);
+  --flare:             var(--p-flare);
+  --error:             var(--p-error);
+
+  color-scheme: dark;
+}
+
+/* ----------------------------------------------------------------------------
+   2b) SEMÂNTICA — TEMA CLARO  (<html class="light">)
+   ---------------------------------------------------------------------------- */
+.light {
+  --canvas:            var(--p-cream);
+  --surface:           var(--p-cream-ui);
+  --surface-deep:      var(--p-cream-alt);
+  --surface-panel:     #FFFFFF;
+  --surface-console:   #ECEBDC;
+  --surface-overlay:   #FFFFFF;
+  --surface-hover:     #EAE9DA;
+  --surface-olive:     #E6E7CE;
+
+  --fg:                var(--p-ink);
+  --fg-strong:         #0A0A0A;
+  --fg-muted:          #4A4A42;
+  --fg-subtle:         #6A6A60;
+  --fg-faint:          #8A8A80;
+  --fg-dim:            rgba(26, 26, 26, 0.45);
+
+  --accent:            var(--p-accent-strong); /* magenta escuro p/ contraste AA */
+  --accent-quiet:      rgba(176, 24, 95, 0.10);
+  --accent-line:       rgba(176, 24, 95, 0.30);
+  --on-accent:         #FFFFFF;
+
+  --border:            rgba(26, 26, 26, 0.14);
+  --border-soft:       rgba(26, 26, 26, 0.08);
+  --border-hover:      rgba(26, 26, 26, 0.22);
+  --border-strong:     rgba(26, 26, 26, 0.26);
+
+  color-scheme: light;
+}
+
+/* ----------------------------------------------------------------------------
+   3) @theme — MAPEAMENTO TAILWIND v4
+   ----------------------------------------------------------------------------
+   "inline" = utilities usam var() diretamente, respondendo ao toggle de tema.
+   ---------------------------------------------------------------------------- */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Cores semânticas → bg-canvas, text-fg, border-border, text-accent, etc. */
+  --color-canvas:          var(--canvas);
+  --color-surface:         var(--surface);
+  --color-surface-deep:    var(--surface-deep);
+  --color-surface-panel:   var(--surface-panel);
+  --color-surface-console: var(--surface-console);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-hover:   var(--surface-hover);
+  --color-surface-olive:   var(--surface-olive);
+
+  --color-fg:              var(--fg);
+  --color-fg-strong:       var(--fg-strong);
+  --color-fg-muted:        var(--fg-muted);
+  --color-fg-subtle:       var(--fg-subtle);
+  --color-fg-faint:        var(--fg-faint);
+  --color-fg-dim:          var(--fg-dim);
+
+  --color-accent:          var(--accent);
+  --color-accent-quiet:    var(--accent-quiet);
+  --color-accent-line:     var(--accent-line);
+  --color-on-accent:       var(--on-accent);
+
+  --color-border:          var(--border);
+  --color-border-soft:     var(--border-soft);
+  --color-border-hover:    var(--border-hover);
+  --color-border-strong:   var(--border-strong);
+
+  --color-info:            var(--info);
+  --color-success:         var(--success);
+  --color-warning:         var(--warning);
+  --color-flare:           var(--flare);
+  --color-error:           var(--error);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Tokens constantes (não mudam por tema) */
+@theme {
+  /* ---- Tipografia ---- */
+  --font-sans:    "Geist", var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "Geist Mono", var(--font-geist-mono), ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  --font-display: "Geist", var(--font-geist-sans), system-ui, sans-serif;
+
+  /* Escala de texto — corpo + UI (fluida com clamp) */
+  --text-xs:    11px;
+  --text-sm:    13px;
+  --text-base:  15px;
+  --text-lg:    clamp(15px, 1.18vw, 17px);
+  --text-xl:    clamp(16px, 1.25vw, 18px);
+  --text-2xl:   clamp(17px, 1.40vw, 20px);
+
+  /* Escala display — headlines (text-display-*) */
+  --text-display-sm: clamp(17px, 1.5vw, 22px);
+  --text-display-md: clamp(22px, 2.1vw, 30px);
+  --text-display-lg: clamp(28px, 2.8vw, 40px);
+  --text-display-xl: clamp(36px, 4.3vw, 62px);
+
+  /* Mono (labels técnicos) */
+  --text-mono-xs: 11px;
+  --text-mono-sm: 11px;
+  --text-mono-lg: 13px;
+
+  /* Line-height */
+  --leading-tight: 1.1;
+  --leading-snug:  1.25;
+  --leading-body:  1.5;
+
+  /* Tracking */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-mono:  0.08em;
+
+  /* ---- Espaçamento (escala nomeada) ---- */
+  --spacing-2xs: 2px;
+  --spacing-xs:  4px;
+  --spacing-sm:  8px;
+  --spacing-md:  12px;
+  --spacing-lg:  16px;
+  --spacing-xl:  24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 64px;
+  --spacing-5xl: 96px;
+  --spacing-6xl: 128px;
+  --spacing-7xl: 160px;
+  --spacing-8xl: 192px;
+
+  /* Layout */
+  --container-content: 1240px;
+
+  /* ---- Raios (brutalista/técnico — cantos fechados) ---- */
+  --radius-none: 0;
+  --radius-xs:   1px;
+  --radius-sm:   2px;
+  --radius-md:   3px;
+  --radius-lg:   4px;
+  --radius-full: 9999px;
+
+  /* ---- Sombras / Glow (assinatura magenta) ---- */
+  --shadow-glow-sm:  0 0 8px var(--p-accent-50);
+  --shadow-glow:     0 0 12px var(--p-accent-50);
+  --shadow-glow-lg:  0 0 18px var(--p-accent-60);
+  --shadow-elevated: 0 24px 56px rgba(0, 0, 0, 0.55);
+  --shadow-card:     0 12px 48px -16px var(--p-accent-20), 0 2px 0 0 var(--p-accent-15);
+  --shadow-focus:    0 0 0 2px var(--p-accent-25), 0 0 12px var(--p-accent-50);
+  --shadow-hairline: inset 0 0 0 1px var(--p-accent-08);
+
+  /* ---- Motion ---- */
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-accel:  cubic-bezier(0.4, 0, 1, 1);
+  --ease-decel:  cubic-bezier(0, 0, 0.2, 1);
+
+  --duration-fast:   200ms;
+  --duration-medium: 400ms;
+  --duration-slow:   700ms;
+}
+
+/* Z-index (variáveis utilitárias — use via var() nos componentes) */
+:root {
+  --z-base: 0;
+  --z-elevated: 1;
+  --z-sticky: 10;
+  --z-nav: 100;
+  --z-dropdown: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* ----------------------------------------------------------------------------
+   4) BASE / RESET LEVE
+   ---------------------------------------------------------------------------- */
+@layer base {
+  * { border-color: var(--border); }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-body);
+    font-feature-settings: "ss01", "cv01"; /* Geist stylistic alternates */
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--fg-strong);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  /* Foco visível com anel magenta (acessibilidade) */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background: var(--p-accent-25);
+    color: var(--fg-strong);
+  }
+
+  /* Respeita preferência de redução de movimento */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ----------------------------------------------------------------------------
+   5) UTILITÁRIOS DE ASSINATURA
+   ---------------------------------------------------------------------------- */
+@layer utilities {
+  /* Glow magenta reutilizável */
+  .glow      { box-shadow: var(--shadow-glow); }
+  .glow-sm   { box-shadow: var(--shadow-glow-sm); }
+  .glow-lg   { box-shadow: var(--shadow-glow-lg); }
+
+  /* Texto com brilho de acento (números-âncora, destaques) */
+  .text-glow {
+    color: var(--accent);
+    text-shadow: 0 0 12px var(--p-accent-50);
+  }
+
+  /* Label mono técnico — caixa-alta, tracking largo */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    letter-spacing: var(--tracking-mono);
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  /* Fundo de grade técnica (blueprint) — para seções "cockpit" */
+  .bg-grid {
+    background-image:
+      linear-gradient(var(--p-accent-08) 1px, transparent 1px),
+      linear-gradient(90deg, var(--p-accent-08) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Fundo pontilhado técnico */
+  .bg-dots {
+    background-image: radial-gradient(circle at 1px 1px, var(--p-accent-10) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* Hairline interna de acento (cards "cockpit") */
+  .ring-hairline { box-shadow: var(--shadow-hairline); }
+}
+
+/* ----------------------------------------------------------------------------
+   6) MAPEAMENTO shadcn/ui — tokens semânticos esperados pelo shadcn
+   ----------------------------------------------------------------------------
+   Adapta DESIGN-SYSTEM.md Seção 7.4. shadcn usa --primary como cor de marca
+   → mapeado para nosso --accent (magenta). Borda usa nosso --border, ring
+   usa --accent. NÃO redefinimos --accent/--accent-foreground para preservar
+   bg-accent = magenta (princípio "magenta é escasso" da Seção 2.2); onde o
+   shadcn usar --accent (hovers de menu/dropdown), herdará magenta — coerente
+   com a estética bold.
+   ---------------------------------------------------------------------------- */
+:root {
+  --background:           var(--canvas);
+  --foreground:           var(--fg);
+  --card:                 var(--surface);
+  --card-foreground:      var(--fg);
+  --popover:              var(--surface-overlay);
+  --popover-foreground:   var(--fg);
+  --primary:              var(--accent);          /* shadcn brand color */
+  --primary-foreground:   var(--on-accent);
+  --secondary:            var(--surface-panel);
+  --secondary-foreground: var(--fg);
+  --muted:                var(--surface);
+  --muted-foreground:     var(--fg-subtle);
+  --destructive:          var(--error);
+  --destructive-foreground: var(--p-warm-white);
+  --input:                var(--border-strong);
+  --ring:                 var(--accent);
+  --radius:               var(--radius-lg);
 }
