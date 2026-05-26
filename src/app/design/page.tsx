@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export const metadata: Metadata = {
   title: "Design System — Portfólio CAO (preview)",
@@ -41,25 +40,13 @@ const semantics = [
 export default function DesignPage() {
   return (
     <main className="min-h-full bg-canvas text-fg">
-      {/* Topbar sticky */}
-      <header className="sticky top-0 z-[100] flex items-center gap-md border-b border-border bg-canvas px-xl py-md">
-        <div className="flex items-center gap-sm">
-          <span className="flex h-7 w-7 items-center justify-center rounded-sm bg-accent font-mono text-sm font-semibold text-on-accent shadow-[var(--shadow-glow-sm)]">
-            C
-          </span>
-          <span className="leading-tight">
-            <span className="block font-semibold text-fg-strong">CAO Design System</span>
-            <span className="label-mono">preview ao vivo · rota /design</span>
-          </span>
-        </div>
-        <span className="flex-1" />
-        <a className="label-mono hover:text-accent" href="/health">
-          /health →
-        </a>
-        <ThemeToggle />
-      </header>
-
       <div className="mx-auto max-w-[1240px] space-y-5xl px-xl py-3xl">
+        <header>
+          <span className="label-mono">preview ao vivo · /design</span>
+          <h1 className="mt-xs text-2xl font-semibold tracking-[-0.02em] text-fg-strong">
+            CAO Design System
+          </h1>
+        </header>
         {/* Hero mini */}
         <section className="relative overflow-hidden rounded-lg border border-border bg-grid p-4xl">
           <span className="label-mono">prova de identidade</span>

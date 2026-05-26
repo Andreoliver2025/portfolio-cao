@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { MobileBottomCTA } from "@/components/layout/mobile-bottom-cta";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +44,12 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col pb-[var(--spacing-5xl)] md:pb-0">
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <MobileBottomCTA />
+      </body>
     </html>
   );
 }
